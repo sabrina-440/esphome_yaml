@@ -1,0 +1,211 @@
+esphome:
+  name: oled-display
+  friendly_name: oled display
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "IqykWd41HxgMixjV+JjXvhnXBkeTtLYrRr1E4rbRHKg="
+
+ota:
+  - platform: esphome
+    password: "9414903911c476b5865d304082e58c5e"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Oled-Display Fallback Hotspot"
+    password: "AqmYdiIguICx"
+#image:
+#  - file: "images/dog.png"
+#    id: dog_icon
+#    type: BINARY
+#    resize: 25x25
+#    invert_alpha: true
+
+font:
+  - file: "gfonts://Silkscreen"
+    id: small
+    size: 10
+  - file: "gfonts://Roboto"
+    id: large
+    size: 24
+  - file: "gfonts://Silkscreen"
+    id: medium
+    size: 15
+
+ # Homeassistant sensor imports
+sensor:
+  - platform: homeassistant
+    name: "Thermostat Temperature"
+    id: temp
+    entity_id: sensor.thermostat_current_temp
+  - platform: homeassistant
+    name: "Thermostat Humidity"
+    id: humidity
+    entity_id: sensor.thermostat_current_humidity
+
+text_sensor:
+  - platform: homeassistant
+    id: my_grocery_list
+    entity_id: input_text.grocery_list
+    internal: true
+    
+time:
+  - platform: homeassistant
+    id: ha_time
+
+spi:
+  clk_pin: GPIO18 # Example Pin
+  mosi_pin: GPIO23 # Example Pin
+
+# #it.image(5, 30, id(dog_icon), ImageAlign::TOP_CENTER);
+display:
+  - platform: ssd1306_spi
+    model: "SH1106 128x64"
+    id: my_display
+    cs_pin: GPIO5
+    dc_pin: GPIO2
+    reset_pin: GPIO4
+    
+    #  if (id(my_grocery_list).has_state()) {
+    #    
+    #    // 2. Print the text on your screen (X coordinate, Y coordinate, Font ID, Format string, Sensor state)
+    #    it.printf(0, 0, id(medium), id(my_grocery_list).state.c_str());
+    #    
+    #    
+    #  } else {
+    #    it.print(0, 0, id(medium), "Loading list...");
+    #  }
+    lambda: |-  
+      it.printf(0, 23, id(medium), "Temp:%.0fF", id(temp).state);
+      it.printf(0,39, id(medium), "Humidity:%.0f%%", id(humidity).state);
+      auto now = id(ha_time).now();
+    
+      if (now.is_valid()) {
+        it.strftime(0, 0, id(large), "%H:%M", now);
+      } else {
+        it.print(0, 0, id(large), "--:--");
+      }
+    
+      
+
+
+
+    esphome:
+  name: oled-display
+  friendly_name: oled display
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "IqykWd41HxgMixjV+JjXvhnXBkeTtLYrRr1E4rbRHKg="
+
+ota:
+  - platform: esphome
+    password: "9414903911c476b5865d304082e58c5e"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Oled-Display Fallback Hotspot"
+    password: "AqmYdiIguICx"
+#image:
+#  - file: "images/dog.png"
+#    id: dog_icon
+#    type: BINARY
+#    resize: 25x25
+#    invert_alpha: true
+
+font:
+  - file: "gfonts://Silkscreen"
+    id: small
+    size: 10
+  - file: "gfonts://Roboto"
+    id: large
+    size: 24
+  - file: "gfonts://Silkscreen"
+    id: medium
+    size: 15
+
+ # Homeassistant sensor imports
+sensor:
+  - platform: homeassistant
+    name: "Thermostat Temperature"
+    id: temp
+    entity_id: sensor.thermostat_current_temp
+  - platform: homeassistant
+    name: "Thermostat Humidity"
+    id: humidity
+    entity_id: sensor.thermostat_current_humidity
+
+text_sensor:
+  - platform: homeassistant
+    id: my_grocery_list
+    entity_id: input_text.grocery_list
+    internal: true
+    
+time:
+  - platform: homeassistant
+    id: ha_time
+
+spi:
+  clk_pin: GPIO18 # Example Pin
+  mosi_pin: GPIO23 # Example Pin
+
+# #it.image(5, 30, id(dog_icon), ImageAlign::TOP_CENTER);
+display:
+  - platform: ssd1306_spi
+    model: "SH1106 128x64"
+    id: my_display
+    cs_pin: GPIO5
+    dc_pin: GPIO2
+    reset_pin: GPIO4
+    
+    #  if (id(my_grocery_list).has_state()) {
+    #    
+    #    // 2. Print the text on your screen (X coordinate, Y coordinate, Font ID, Format string, Sensor state)
+    #    it.printf(0, 0, id(medium), id(my_grocery_list).state.c_str());
+    #    
+    #    
+    #  } else {
+    #    it.print(0, 0, id(medium), "Loading list...");
+    #  }
+    lambda: |-  
+      it.printf(0, 23, id(medium), "Temp:%.0fF", id(temp).state);
+      it.printf(0,39, id(medium), "Humidity:%.0f%%", id(humidity).state);
+      auto now = id(ha_time).now();
+    
+      if (now.is_valid()) {
+        it.strftime(0, 0, id(large), "%H:%M", now);
+      } else {
+        it.print(0, 0, id(large), "--:--");
+      }
+    
+      
+
+
+
+    

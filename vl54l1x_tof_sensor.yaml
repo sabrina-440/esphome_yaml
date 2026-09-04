@@ -1,0 +1,87 @@
+esphome:
+  name: esphome-web-9cb7fc
+  friendly_name: ESPHome Web 9cb7fc
+  min_version: 2025.11.0
+  name_add_mac_suffix: false
+
+esp32:
+  variant: esp32
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+# Allow Over-The-Air updates
+ota:
+- platform: esphome
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+font:
+  - file: "gfonts://Silkscreen"
+    id: small
+    size: 10
+  - file: "gfonts://Roboto"
+    id: large
+    size: 24
+  - file: "gfonts://Silkscreen"
+    id: medium
+    size: 15
+
+external_components:
+  - source: github://soldierkam/vl53l1x_sensor
+    refresh: 1s
+
+
+
+i2c:
+  - id: bus_a
+    sda: GPIO21
+    scl: GPIO22
+    # Higher data rates reduce the time required for read/write operations, which
+    # should prevent the "component took a long time for an operation" warning in the logs.
+    frequency: 400kHz
+
+sensor:
+  - platform: vl53l1x_sensor
+    id: distance_sensor
+    name: Distance sensor
+    enable_pin: GPIO16 # connected to XSHUT
+    distance_mode: SHORT # LOW (up to 1.3m, better ambient immunity), MEDIUM (up to 3m), HIGH (up to 4 m, maximum distance)
+    # Time required by the sensor to perform one range measurement.
+    # If fast response time is critical (e.g., obstacle avoidance in robots), use 20ms-33ms.
+    # For general-purpose use, 50ms-100ms provides a good balance. For high accuracy at long distances, use 200ms-500ms.
+    timing_budget: 33ms
+    # Signal threshold recomendations:
+    # - Use a low threshold (500-1000 kcps) if detecting dark or distant objects.
+    # - Use a medium threshold (1000-2000 kcps) for most applications.
+    # - Use a high threshold (2000+ kcps) for precise distance measurement with strong signals.
+    signal_threshold: 1000
+    update_interval: 1s
+    address: 0x32 # default is 0x29
+    accuracy_decimals: 2
+    roi_center: # the x and y coordinates of the SPAD that should serve as the center of the ROI.
+      x: 3
+      y: 8
+    #roi_center: 167 # Same as above, but with the center specified by the SPAD number instead of x and y coordinates.
+    roi_size: # width and height of ROI
+      x: 4
+      y: 4
+    ambient_rate_sensor: # creates sensor to report ambient IR light 
+      id: "ambient_rate"
+      name: "Ambient Rate [MCPS]"
+    avg_signal_rate_sensor: # creates sensor to report average signal 
+      id: "avg_signal_rate"
+      name: "Average Signal Rate [MCPS]"
+    peak_signal_rate_sensor: # creates sensor to report peak signal
+      id: "peak_signal_rate"
+      name: "Peak Signal Rate [MCPS]"
+    range_status_sensor:
+      id: "range_status"
+      name: "Range Status"

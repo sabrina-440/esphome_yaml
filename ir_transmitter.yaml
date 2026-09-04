@@ -1,0 +1,52 @@
+esphome:
+  name: oled-display
+  friendly_name: oled display
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "IqykWd41HxgMixjV+JjXvhnXBkeTtLYrRr1E4rbRHKg="
+
+ota:
+  - platform: esphome
+    password: "9414903911c476b5865d304082e58c5e"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Oled-Display Fallback Hotspot"
+    password: "AqmYdiIguICx"
+
+remote_receiver:
+    pin: GPIO14
+    #inverted: true
+    dump: all
+
+remote_transmitter:
+    pin: GPIO15
+    carrier_duty_percent: 50%
+  
+
+button:
+  - platform: template
+    name: Frame Light On
+    on_press:
+      - remote_transmitter.transmit_pronto:
+          data: "0000 006D 0022 0000 015C 00AB 0018 0014 0018 0014 0018 0014 0018 0014 0018 0014 0018 0014 0017 0015 0018 0014 0018 003E 0018 003E 0017 003F 0018 003E 0018 003E 0018 003E 0017 003F 0017 003F 0017 003F 0018 0014 0017 003F 0017 0015 0017 0015 0017 0015 0017 003F 0017 0015 0017 0015 0017 003F 0017 0015 0017 003F 0017 003F 0017 003F 0017 0015 0017 003F 0017 0180"
+  - platform: template
+    name: Frame Light Off
+    on_press:
+      - remote_transmitter.transmit_pronto:
+          data: "0000 006D 0022 0000 015E 00AA 001A 0012 0019 0012 001A 0012 001A 0012 001A 0012 001A 0012 001A 0012 001A 0012 001A 003D 001A 003D 001A 003C 001A 003C 001A 003C 001A 003D 001A 003C 001A 003C 001A 003C 001A 003D 001A 003C 001A 0012 001A 0012 001A 0012 001A 003C 001A 0012 001A 0012 001A 0012 001A 0012 001A 003D 001A 003D 001A 003C 001A 0012 001A 003D 001A 0180"
+    
